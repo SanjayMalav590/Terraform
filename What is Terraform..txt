@@ -1,0 +1,85 @@
+What is Terraform : 
+  - Terraform  is a tool for building,changing and versioning infrastructure safely and efficiently.
+  - Terraform can manage existing and ppular service providers as well as custom in-house solutions.
+  - It is used to create your own infra and resources for creating new resources on AWS, Azure, GCP, 
+
+terraform init =  Initialization of terraform
+terraform plan =  You can validate your code - You can get the pre-result
+terraform apply = Execute your code
+terraform destory = Deleting the resources
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+AWS CLI
+
+www.terraform.io
+
+https://www.terraform.io/docs/providers/aws/r/s3_bucket.html
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Creating S3 Bucket
+==================
+provider "aws" {
+ region="us-east-2"
+ access_key="AKIA3WLOWF35USET2D56"
+ secret_key="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"
+}
+
+resource "aws_s3_bucket" "buck" {
+  bucket = "my-tf-poornima2-bucket"
+  acl    = "public"
+
+  tags = {
+    Name        = "Mytestbuc"
+    Environment = "test"
+  }
+}
+-------------------------------------------------------------------------
+
+#Creating VPC
+=============
+provider "aws" {
+ region="us-east-2"
+ access_key="AKIAJS2L67G6EOJNJIBQ"
+ secret_key="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"
+}
+
+resource "aws_vpc" "myvpc" {
+  cidr_block = "10.0.0.0/16"
+  tags = {
+    Name        = "MyVPC"
+    Environment = "test"
+  }
+}
+
+
+resource "aws_subnet" "subnet1" {
+  vpc_id     = "vpc-02339da4e9e80f166"
+  cidr_block = "192.168.1.0/24"
+  tags = {
+    Name = "FrontEndSubnet"
+  }
+}
+
+
+
+resource "aws_route_table_association" "assoc" {
+  subnet_id      = "subnet-07694677da1545648"
+  route_table_id = "rtb-01ed26b11133347b0"
+}
+
+
+resource "aws_internet_gateway" "gw" {
+  vpc_id = "vpc-02b840e84f8653c01"
+
+  tags = {
+    Name = "SM-IGW"
+  }
+}
+
+
+resource "aws_route" "r" {
+  route_table_id              = "rtb-01ed26b11133347b0"
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id      = "igw-0e6820d1a849acae4"
+}
+--------------------------------------------------------------------------
